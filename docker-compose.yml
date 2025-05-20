@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  fintech_api:
+    image: eclipse-temurin:21-jdk-jammy
+    container_name: fintech_api
+    build: ./api/
+    ports:
+      - "0.0.0.0:8282:8282"
+    networks:
+      - api_net
+    volumes:
+      - /srv/projects/fintech_api/log_app:/log_app
+    restart: always
+    environment:
+      TZ: 'Asia/Tashkent'
+      PGTZ: 'Asia/Tashkent'
+
+networks:
+  api_net:
+    external: true

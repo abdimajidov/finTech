@@ -1,0 +1,47 @@
+server:
+  port: 8282
+  servlet:
+    context-path: /
+
+#DATABASE CONFIGURATION
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    open-in-view: true
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+    time-zone: Asia/Tashkent
+  main:
+    allow-bean-definition-overriding: true
+
+#SWAGGER
+springdoc:
+  swagger-ui:
+    path: /
+  api-docs:
+    path: /v3/api-docs
+  override-with-generic-response: false
+
+#Logging configuration
+logging:
+  file:
+    path: /log/finTech
+  level:
+    root: info
+  logback:
+    rolling-policy:
+      max-history: 365
+      clean-history-on-start: false
+      max-file-size: 20MB
