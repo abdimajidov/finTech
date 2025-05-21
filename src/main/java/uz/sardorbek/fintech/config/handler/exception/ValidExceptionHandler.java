@@ -23,6 +23,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import uz.sardorbek.fintech.config.handler.exception.customException.ElementNotFoundException;
+import uz.sardorbek.fintech.config.handler.exception.customException.NotEnoughBalanceException;
 import uz.sardorbek.fintech.config.utils.global_response.ResponseObject;
 
 import javax.persistence.EntityNotFoundException;
@@ -222,6 +223,17 @@ public class ValidExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(
                         new ResponseObject(
                                 "Parameter is invalid",
+                                e.getMessage()
+                        )
+                );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleNotEnoughBalanceException(NotEnoughBalanceException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(
+                        new ResponseObject(
+                                "Insufficient funds in the account",
                                 e.getMessage()
                         )
                 );

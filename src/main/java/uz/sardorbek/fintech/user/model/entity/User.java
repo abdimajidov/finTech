@@ -12,6 +12,7 @@ import uz.sardorbek.fintech.config.audit.CustomAuditable;
 import uz.sardorbek.fintech.config.utils.abstract_entity.AbstractAuditEntity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,6 +40,9 @@ public class User extends AbstractAuditEntity implements UserDetails, Serializab
     String password;
     @Column(unique = true, nullable = false)
     String email;
+
+    @Column(nullable = false)
+    BigDecimal balance = BigDecimal.ZERO;
 
     @JsonIgnore
     Boolean isAccountNonExpired;
