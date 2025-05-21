@@ -1,11 +1,30 @@
-FROM openjdk:23-jdk-slim-bullseye
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-21 as builder
+WORKDIR /workspace/app
 
+# Copy only the files needed for dependencies
+COPY pom.xml .
+# Download dependencies first to leverage Docker cache
+RUN mvn dependency:go-offline
+
+# Copy source files
+COPY src src
+
+# Build the application
+RUN mvn package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
-RUN apt-get update && apt-get install -y libfreetype6 fontconfig && rm -rf /var/lib/apt/lists/*
 
-COPY *.jar app.jar
-COPY application.yaml application.yaml
+# Copy the built application from builder
+COPY --from=builder /workspace/app/target/*.jar app.jar
 
-CMD ["java", "-jar", "app.jar", "--spring.config.location=file:./application.yaml"]
+# Create log directory
+RUN mkdir -p /log/finTech
 
+# Expose the application port
 EXPOSE 8282
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

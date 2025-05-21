@@ -3,22 +3,22 @@ server:
   servlet:
     context-path: /
 
-#DATABASE CONFIGURATION
 spring:
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/postgres} # Use host port 5433
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
   jpa:
-    open-in-view: true
-    generate-ddl: true
-    show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create}
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
   jackson:
     serialization:
       fail-on-empty-beans: false

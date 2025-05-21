@@ -36,10 +36,10 @@ public class TransactionController {
     @GetMapping
     @Operation(summary = "Get transactions", description = "This method can help you to get transactions.")
     public ResponseEntity<?> get(@ParameterObject Pageable pageable,
-                                 @RequestParam(name = "from")
+                                 @RequestParam(name = "from", required = false)
                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
                                  LocalDate from,
-                                 @RequestParam(name = "to")
+                                 @RequestParam(name = "to", required = false)
                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
                                  LocalDate to) {
         ApiResponse response = transactionService.get(from, to, pageable);

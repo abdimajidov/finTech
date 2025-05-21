@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import java.math.BigDecimal;
+
 public record UserDTO(
         @NotBlank(message = "name can not be empty")
         String name,
@@ -24,7 +26,8 @@ public record UserDTO(
         @Email(message = "incorrect email input")
         String email,
         @NotNull(message = "role id is required")
-        Long roleId
+        Long roleId,
+        BigDecimal balance
 ) {
     public record UserUpdateDTO(
             @NotBlank(message = "name can not be empty")
@@ -44,7 +47,8 @@ public record UserDTO(
             @Email(message = "incorrect email input")
             String email,
             @NotNull(message = "role id is required")
-            Long roleId
+            Long roleId,
+            BigDecimal balance
     ) {
     }
 }

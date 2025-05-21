@@ -25,6 +25,7 @@ public class Role extends AbstractAuditEntity implements GrantedAuthority {
     @Column(unique = true)
     String name;
     @ManyToMany(fetch = FetchType.EAGER)
+    @OrderBy("id asc")
     @JoinTable(name = "roles_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))

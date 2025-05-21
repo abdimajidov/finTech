@@ -19,6 +19,8 @@ import uz.sardorbek.fintech.user.model.mapper.UserMapper;
 import uz.sardorbek.fintech.user.repository.RoleRepository;
 import uz.sardorbek.fintech.user.repository.UserRepository;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -37,14 +39,53 @@ public class UserService {
     final RoleService roleService;
 
     public void initializeUser() {
-        userRepository.save(User.builder().username("admin@root").
-                password(passwordEncoder.encode("123"))
-                .address("Uzbekistan, Tashkent")
-                .email("admin@mail.ru")
-                .name("Super")
-                .surname("Administrator")
-                .role(roleRepository.findByName(Roles.ADMIN.name()).orElseThrow(() -> new NoSuchElementException("Admin Role not found")))
-                .build());
+        List<User> userList = List.of(
+                User.builder().username("admin@root").
+                        password(passwordEncoder.encode("123"))
+                        .address("Uzbekistan, Tashkent")
+                        .email("admin@mail.ru")
+                        .name("Super")
+                        .surname("Administrator")
+                        .patronym("Admin")
+                        .role(roleRepository.findByName(Roles.ADMIN.name()).orElseThrow(() -> new NoSuchElementException("Admin Role not found")))
+                        .balance(BigDecimal.ZERO)
+                        .phoneNumber("998901234567")
+                        .build(),
+                User.builder().username("samandar").
+                        password(passwordEncoder.encode("456"))
+                        .address("Uzbekistan, Tashkent")
+                        .email("samandar@mail.ru")
+                        .name("Samandar")
+                        .surname("Ochilov")
+                        .role(roleRepository.findByName(Roles.ACCOUNTANT_ASSISTANT.name()).orElseThrow(() -> new NoSuchElementException("ACCOUNTANT_ASSISTANT Role not found")))
+                        .balance(BigDecimal.valueOf(1000000))
+                        .phoneNumber("998901234568")
+                        .patronym("Aliyevich")
+                        .build(),
+                User.builder().username("ilhom").
+                        password(passwordEncoder.encode("789"))
+                        .address("Uzbekistan, Tashkent")
+                        .email("ilhom@mail.ru")
+                        .name("Ilhom")
+                        .surname("Qamrayev")
+                        .role(roleRepository.findByName(Roles.MANAGER.name()).orElseThrow(() -> new NoSuchElementException("MANAGER Role not found")))
+                        .balance(BigDecimal.valueOf(1000000))
+                        .phoneNumber("998901234569")
+                        .patronym("Botirovich")
+                        .build(),
+                User.builder().username("doston").
+                        password(passwordEncoder.encode("101"))
+                        .address("Uzbekistan, Tashkent")
+                        .email("doston@mail.ru")
+                        .name("Doston")
+                        .surname("Mavlonov")
+                        .role(roleRepository.findByName(Roles.HOUSEHOLD_EMPLOYEE.name()).orElseThrow(() -> new NoSuchElementException("HOUSEHOLD_EMPLOYEE Role not found")))
+                        .balance(BigDecimal.valueOf(1000000))
+                        .phoneNumber("998901234560")
+                        .patronym("Toxirovich")
+                        .build()
+        );
+        userRepository.saveAll(userList);
     }
 
     public ApiResponse add(UserDTO userDTO) {
@@ -99,7 +140,7 @@ public class UserService {
     }
 
     public ApiResponse getList() {
-        return globalResponse.responseOKStatus(userRepository.findAllByIsActiveTrueAndIsEnabledTrueAndUsernameIsNot("admin@root").stream().map(user -> new UserListDTO(user.getId(), user.getName() + (user.getSurname() != null ? (" " + user.getSurname()) : "") + (user.getPatronym() != null ? (" " + user.getPatronym()) : ""))).toList());
+        return globalResponse.responseOKStatus(userRepository.findAllByIsActiveTrue().stream().map(user -> new UserListDTO(user.getId(), user.getName() + (user.getSurname() != null ? (" " + user.getSurname()) : "") + (user.getPatronym() != null ? (" " + user.getPatronym()) : ""))).toList());
     }
 
     public ApiResponse unlock(Long id) {

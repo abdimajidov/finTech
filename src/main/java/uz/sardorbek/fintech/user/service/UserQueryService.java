@@ -25,7 +25,6 @@ public class UserQueryService {
         Specification<User> specification = createSpecification(criteria);
         specification = specification.and((root, query, builder) -> builder.isTrue(root.get("isActive")));
         specification = specification.and((root, query, builder) -> builder.isTrue(root.get("isEnabled")));
-        specification = specification.and((root, query, builder) -> builder.notEqual(root.get("username"), "admin@root"));
         Pageable sortedPageable = globalResponse.makeSorted(pageable);
         return globalResponse.responseOKStatus(userRepository.findAll(specification, sortedPageable));
     }

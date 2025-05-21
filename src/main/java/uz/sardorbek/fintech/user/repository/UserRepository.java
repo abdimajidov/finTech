@@ -14,9 +14,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByUsername(String username);
-    List<User> findAllByIdInAndIsActiveTrue(List<Long> ids);
-    List<User> findAllByIsActiveTrueAndIsEnabledTrue();
-    List<User> findAllByIsActiveTrueAndIsEnabledTrueAndUsernameIsNot(String username);
     Boolean existsByRole(Role role);
-    int countAllByIsActiveTrueAndIsEnabledTrue();
+    List<User> findAllByIsActiveTrue();
 }
