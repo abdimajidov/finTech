@@ -102,3 +102,86 @@ docker-compose ps
 ```bash
 docker-compose logs db
 ```
+
+## Команды SQL:
+
+```sql
+-- Sequence for ID generation
+CREATE SEQUENCE entity_id_seq START 1000 INCREMENT 1;
+
+-- USERS table
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY DEFAULT nextval('entity_id_seq'),
+    name VARCHAR(255),
+    surname VARCHAR(255),
+    patronym VARCHAR(255),
+    phone_number VARCHAR(255),
+    address VARCHAR(255),
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    balance NUMERIC(19,2) NOT NULL DEFAULT 0,
+    is_account_non_expired BOOLEAN,
+    is_active BOOLEAN,
+    is_credentials_non_expired BOOLEAN,
+    is_enabled BOOLEAN,
+    role_id BIGINT,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role(id),
+    CONSTRAINT fk_user_created_by FOREIGN KEY (created_by) REFERENCES users(id),
+    CONSTRAINT fk_user_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+
+-- ROLE table
+CREATE TABLE role (
+    id BIGINT PRIMARY KEY DEFAULT nextval('entity_id_seq'),
+    name VARCHAR(255) UNIQUE,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    CONSTRAINT fk_role_created_by FOREIGN KEY (created_by) REFERENCES users(id),
+    CONSTRAINT fk_role_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+
+-- PERMISSION table
+CREATE TABLE permission (
+    id BIGINT PRIMARY KEY DEFAULT nextval('entity_id_seq'),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    CONSTRAINT fk_permission_created_by FOREIGN KEY (created_by) REFERENCES users(id),
+    CONSTRAINT fk_permission_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+
+-- ROLES_PERMISSIONS join table
+CREATE TABLE roles_permissions (
+    role_id BIGINT NOT NULL,
+    permission_id BIGINT NOT NULL,
+    PRIMARY KEY (role_id, permission_id),
+    CONSTRAINT fk_rp_role FOREIGN KEY (role_id) REFERENCES role(id),
+    CONSTRAINT fk_rp_permission FOREIGN KEY (permission_id) REFERENCES permission(id)
+);
+
+-- TRANSACTION table
+CREATE TABLE transaction (
+    id BIGINT PRIMARY KEY DEFAULT nextval('entity_id_seq'),
+    sender_id BIGINT,
+    receiver_id BIGINT,
+    amount NUMERIC(19,2) NOT NULL,
+    description TEXT,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    CONSTRAINT fk_transaction_sender FOREIGN KEY (sender_id) REFERENCES users(id),
+    CONSTRAINT fk_transaction_receiver FOREIGN KEY (receiver_id) REFERENCES users(id),
+    CONSTRAINT fk_transaction_created_by FOREIGN KEY (created_by) REFERENCES users(id),
+    CONSTRAINT fk_transaction_updated_by FOREIGN KEY (updated_by) REFERENCES users(id)
+);
+```
